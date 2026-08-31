@@ -1,0 +1,47 @@
+{% extends "@Admin/layouts/admin.twig" %}
+
+{% set _page = 'admin.pages.builder' %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto">
+
+	{% embed "@Admin/components/page-header.twig" with {
+		back: routes.back,
+		title: page.meta.title|default('Page Builder'),
+		subtitle: page.meta.view|default('Build your page here')
+	} %}
+		{% block actions %}
+		    <button type="submit"
+			form="pageBuilderForm"
+			class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow">
+			{{ icon('save', 'w-4 h-4')|raw }} Save
+		    </button>
+		{% endblock %}
+	{% endembed %}
+
+	<form
+		id="pageBuilderForm"
+		method="post"
+		action="{{ routes.save }}"
+	>
+
+		{{ csrf_field() }}
+
+		<input
+			type="hidden"
+			name="path"
+			value="{{ path }}"
+		>
+
+		{% include "@Admin/components/schema-form.twig" with {
+		    schema: schema,
+		    values: fields,
+		    root: "fields"
+		} %}
+
+	</form>
+
+</div>
+
+{% endblock %}

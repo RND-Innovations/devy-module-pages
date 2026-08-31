@@ -1,0 +1,163 @@
+<div class="relative overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100/70 shadow-xl">
+
+    {# Soft Background Glow #}
+    <div class="absolute -top-24 -right-24 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-70"></div>
+    <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-emerald-100 rounded-full blur-3xl opacity-60"></div>
+
+    <div class="relative p-4 md:p-6">
+
+        {# HEADER #}
+        <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-6">
+
+            <div>
+
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wider border border-blue-100 mb-3">
+
+                    {{ icon('content', 'w-3.5 h-3.5')|raw }}
+
+                    Content Overview
+
+                </div>
+
+                <h2 class="text-2xl md:text-3xl font-black tracking-tight text-zinc-900 leading-tight">
+                    Recent Pages
+                </h2>
+
+                <p class="mt-1 text-sm text-zinc-500">
+                    Quickly access and manage your latest updated content.
+                </p>
+
+            </div>
+
+            <a href="{{ route('admin.pages') }}"
+               class="group inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white border border-zinc-200 hover:border-blue-400 shadow-sm hover:shadow-md transition-all duration-200 shrink-0">
+
+                <span class="text-sm font-semibold text-zinc-700">
+                    View All
+                </span>
+
+                <span class="transform group-hover:translate-x-1 transition">
+			{{ icon('go', 'w-5 h-5')|raw }}
+                </span>
+
+            </a>
+
+        </div>
+
+        {# LIST #}
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+            {% for page in pages %}
+
+                <a href="{{ route('admin.pages') }}/edit/{{ page.path }}"
+                   class="group relative overflow-hidden flex flex-col justify-between p-5 rounded-3xl bg-white border border-zinc-200 hover:border-blue-300 hover:shadow-xl transition-all duration-300 min-h-[190px]">
+
+                    {# Hover Glow #}
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-indigo-50/0 group-hover:from-blue-50 group-hover:to-indigo-50 transition-all duration-300"></div>
+
+                    <div class="relative">
+
+                        {# TOP #}
+                        <div class="flex items-start justify-between gap-3 mb-5">
+
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center shadow-md shrink-0">
+
+                                {{ icon('content', 'w-5 h-5')|raw }}
+
+                            </div>
+
+                            {% set status = page.meta.status ?? 'published' %}
+
+                            {% if status == 'published' %}
+
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-100 whitespace-nowrap">
+
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+
+                                    Published
+
+                                </span>
+
+                            {% elseif status == 'draft' %}
+
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold border border-amber-100 whitespace-nowrap">
+
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+
+                                    Draft
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-700 text-[11px] font-bold border border-zinc-200 whitespace-nowrap">
+
+                                    {{ status }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        {# CONTENT #}
+                        <div>
+
+                            <h3 class="font-black text-zinc-900 text-[16px] leading-snug line-clamp-2 group-hover:text-blue-600 transition">
+
+                                {{ page.meta.title ?? page.path }}
+
+                            </h3>
+
+                            <div class="mt-2 text-xs text-zinc-500 font-mono break-all">
+
+                                /{{ page.path }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {# FOOTER #}
+                    <div class="relative mt-6 flex items-center justify-between text-xs">
+
+                        <div class="text-zinc-400">
+                            Click to edit
+                        </div>
+
+                        <div class="text-blue-600 font-bold group-hover:translate-x-1 transition">
+				{{ icon('go', 'w-5 h-5')|raw }}
+                        </div>
+
+                    </div>
+
+                </a>
+
+            {% else %}
+
+                <div class="col-span-full py-16 text-center">
+
+                    <div class="w-16 h-16 mx-auto rounded-3xl bg-zinc-100 flex items-center justify-center mb-4">
+
+                        {{ icon('content', 'w-7 h-7 text-zinc-400')|raw }}
+
+                    </div>
+
+                    <h3 class="text-lg font-black text-zinc-800 mb-1">
+                        No Pages Yet
+                    </h3>
+
+                    <p class="text-sm text-zinc-500">
+                        Start building your site by creating your first page.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>

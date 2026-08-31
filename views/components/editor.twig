@@ -1,0 +1,11 @@
+<div>
+    <label class="block text-sm mb-2">
+        {{ label }}
+    </label>
+    <div data-code-editor>
+        <textarea 
+            name="{{ name }}"
+            class="w-full border rounded-lg px-3 py-2 {{ class|default('') }}">{{ value|default('') }}</textarea>
+    </div>    
+</div>
+

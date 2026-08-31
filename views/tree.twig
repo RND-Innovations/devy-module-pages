@@ -1,0 +1,13 @@
+{% extends "@Admin/layouts/admin.twig" %}
+
+{% set _page = 'admin.pages.tree' %}
+
+{% block content %}
+
+{% include "@Pages/components/organizer.twig" with {
+	current_path: current_path,
+	tree: tree,
+	routes: routes
+} %}	
+
+{% endblock %}

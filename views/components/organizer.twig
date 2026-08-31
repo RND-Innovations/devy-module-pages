@@ -1,0 +1,64 @@
+<div 
+    x-data='organizer({{ {
+        items: tree,
+        routes: routes,
+        currentPath: current_path
+    }|json_encode|raw }})'
+    class="max-w-3xl mx-auto space-y-4"
+>
+
+    {# ✅ HEADER INSIDE Alpine scope #}
+    {% embed "@Admin/components/page-header.twig" with {
+        title: "Page Organizer",
+        subtitle: current_path ?: 'Home',
+        back: current_path 
+            ? '?path=' ~ current_path|split('/')|slice(0, -1)|join('/')
+            : null
+    } %}
+        {% block actions %}
+            <button 
+                @click="save()"
+                class="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:opacity-80"
+            >
+                {{ icon('save', 'w-4 h-4')|raw }} Save
+            </button>
+        {% endblock %}
+    {% endembed %}
+
+    <!-- EMPTY -->
+    <template x-if="items.length === 0">
+        <div class="text-gray-400 text-center py-10">
+            No pages here
+        </div>
+    </template>
+
+    <!-- LIST -->
+    <div class="space-y-2">
+        <template x-for="item in items" :key="item.path">
+            <div 
+                class="flex items-center gap-3 p-3 bg-white rounded-xl shadow hover:shadow-md transition cursor-move"
+                draggable="true"
+                @dragstart="dragStart(item)"
+                @dragover.prevent
+                @drop="drop(item)"
+            >
+                <span class="text-gray-400 cursor-grab">☰</span>
+
+                <div class="flex-1">
+                    <div 
+                        class="font-medium cursor-pointer hover:underline"
+                        @click="open(item)"
+                        x-text="item.path"
+                    ></div>
+                </div>
+
+                <button 
+                    @click="toggle(item)"
+                    class="text-xl"
+                    x-text="item.featured ? '⭐' : '☆'"
+                ></button>
+            </div>
+        </template>
+    </div>
+
+</div>

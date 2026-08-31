@@ -1,0 +1,9 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.css');
+
+.CodeMirror {
+  height: 70vh !important;
+}
+
+.CodeMirror-scroll {
+  min-height: 200px;
+}

@@ -1,0 +1,55 @@
+{% extends "@Admin/layouts/admin.twig" %}
+
+{% set _page = 'admin.pages.create' %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto space-y-6">
+
+    {# 🔷 HEADER #}
+    {% embed "@Admin/components/page-header.twig" with {
+        title: "Create Page",
+        subtitle: '/' ~ (current_path ?: ''),
+        back: routes.back
+    } %}
+        {% block actions %}
+            <button form="createForm"
+                class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow">
+                {{ icon('add', 'w-4 h-4')|raw }} Create
+            </button>
+        {% endblock %}
+    {% endembed %}
+
+
+    {# 🔷 FORM CARD #}
+    {% embed "@Admin/components/card.twig" with { title: "Page Details" } %}
+        {% block content %}
+
+            <form id="createForm" method="post" action="{{ routes.store }}">
+
+		{{ csrf_field() }}
+		
+                <input type="hidden" name="path" value="{{ current_path }}">
+
+                <div class="space-y-4">
+
+                    {# 🔷 SLUG INPUT (reuse component) #}
+                    {% include "@Admin/components/input.twig" with {
+                        label: "Page Slug",
+                        name: "slug",
+                        value: '',
+                        prefix: '/',
+                        placeholder: "my-page",
+                        hint: "Used in URL. Example: " ~ (current_path ?: '') ~ "/about-us"
+                    } %}
+
+                </div>
+
+            </form>
+
+        {% endblock %}
+    {% endembed %}
+
+</div>
+
+{% endblock %}

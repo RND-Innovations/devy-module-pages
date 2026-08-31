@@ -1,0 +1,14 @@
+{
+    "name": "rnd-innovations/devy-module-pages",
+    "description": "Easily build, manage, and publish custom pages across your website.",
+    "type": "devy-module",
+    "require": {
+        "php": "^8.3",
+        "rnd-innovations/devy-core": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DeVy\\Modules\\Pages\\": "src/"
+        }
+    }
+}

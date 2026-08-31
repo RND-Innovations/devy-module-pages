@@ -1,0 +1,174 @@
+{% extends "@Admin/layouts/admin.twig" %}
+
+{% set _page = 'admin.pages.edit' %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto">
+
+    {# HEADER #}
+    {% embed "@Admin/components/page-header.twig" with {
+        back: routes.back,
+        title: page.meta.title,
+        subtitle: "/" ~ page.path
+    } %}
+        {% block actions %}
+
+            <a href="/{{ page.path }}" target="_blank"
+               class="inline-flex items-center gap-1 text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded">
+                {{ icon('eye', 'w-4 h-4')|raw }} Preview
+            </a>
+
+            <a href="{{ routes.build }}"
+               class="inline-flex items-center gap-1 text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded">
+                {{ icon('layout-list', 'w-4 h-4')|raw }} Builder
+            </a>
+
+
+            {# ✅ SAVE BUTTON (ONLY SAVE FORM) #}
+		<button type="button"
+		    id="saveBtn"
+		    class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow">
+		    {{ icon('save', 'w-4 h-4')|raw }} Save
+		</button>
+
+        {% endblock %}
+    {% endembed %}
+
+    {# ================= SAVE FORM ================= #}
+    <form id="pageForm" method="post" action="{{ routes.list }}/save">
+
+	{{ csrf_field() }}
+        <input type="hidden" name="path" value="{{ page.path }}">
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {# MAIN #}
+            <div class="lg:col-span-2 space-y-6">
+
+                {% embed "@Admin/components/card.twig" %}
+                    {% block content %}
+                        {% include "@Admin/components/input.twig" with {
+                            label: "Title",
+                            name: "title",
+                            value: page.meta.title
+                        } %}
+
+                        {% include "@Admin/components/textarea.twig" with {
+                            label: "Description",
+                            name: "description",
+                            value: page.meta.description
+                        } %}
+                    {% endblock %}
+                {% endembed %}
+
+		<div class="overflow-x-auto">
+		    <div class="flex items-center gap-2 min-w-max p-2">
+			{{ hook_render('admin.page.edit.tools', {
+			    page: page,
+			    routes: routes
+			}) }}
+		    </div>
+		</div>
+                
+                {% embed "@Admin/components/card.twig" %}
+                    {% block content %}
+                    
+                        {% include "@Pages/components/editor.twig" with {
+		                label: "Content Body (HTML)",
+		                name: "body",
+		                value: page.body,
+                        } %}
+                        
+                    {% endblock %}
+                {% endembed %}
+
+                {% embed "@Admin/components/card.twig" %}
+                    {% block content %}
+			{% include "@Admin/components/textarea.twig" with {
+			    label: "Fields (JSON)",
+			    name: "fields",
+			    value: fields|json_encode(constant('JSON_PRETTY_PRINT')),
+			    class: "h-40 font-mono text-sm"
+			} %}
+                    {% endblock %}
+                {% endembed %}
+
+            </div>
+
+            {# SIDEBAR #}
+            <div class="space-y-6">
+
+                {% embed "@Admin/components/card.twig" with { title: "Settings" } %}
+                    {% block content %}
+
+                        {% include "@Admin/components/select.twig" with {
+                            label: "Page View",
+                            name: "view",
+                            value: page.meta.view ?? 'default-page',
+                            options: views
+                        } %}
+
+                        {% include "@Admin/components/select.twig" with {
+                            label: "Status",
+                            name: "status",
+                            value: page.meta.status,
+                            options: {
+                                draft: "Draft",
+                                published: "Published"
+                            }
+                        } %}
+
+                    {% endblock %}
+                {% endembed %}
+
+                <div class="bg-gray-50 border rounded-xl p-4 text-xs text-gray-500">
+                    <p><strong>PATH:</strong> /{{ page.path }}</p>
+                </div>
+
+                {{ hook_render('admin.page.edit.sidebar', {
+                    page: page,
+                    routes: routes
+                }) }}
+
+                {# ================= DELETE FORM ================= #}
+                {% embed "@Admin/components/collapse.twig" with { title: "Danger Zone" } %}
+                    {% block content %}
+
+                        <p class="text-xs text-gray-500 mb-3">
+                            Type DELETE to confirm permanent removal.
+                        </p>
+
+		            <button type="submit"
+		            	form="deleteForm"
+		                class="w-full text-sm bg-red-100 hover:bg-red-200 text-red-700 px-3 py-2 rounded flex items-center justify-center gap-1">
+		                {{ icon('trash', 'w-4 h-4')|raw }}
+		                Delete Page
+		            </button>
+                            
+
+
+                    {% endblock %}
+                {% endembed %}
+
+            </div>
+
+        </div>
+
+    </form>
+    
+	<form id="deleteForm"
+	      method="post"
+	      action="{{ routes.list }}/delete">
+		{{ csrf_field() }}
+		<input type="hidden" name="parent" value="{{ current_path }}">
+		<input type="hidden" name="path" value="{{ page.path }}">
+	</form>
+</div>
+
+{{ hook_render('admin.page.edit.bottom', {
+	page: page,
+	routes: routes
+}) }}
+                
+{% endblock %}
