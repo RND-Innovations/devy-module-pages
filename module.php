@@ -29,7 +29,7 @@ return [
     'meta' => [
         'name' => 'Pages',
         'description' => 'Easily build, manage, and publish custom pages across your website.',        
-        'version' => '1.0.0',
+        'version' => '1.0.1',
         'author' => 'RND Innovations',
         'website' => 'https://rndvn.com',
         'license' => 'MIT',
@@ -80,6 +80,78 @@ return [
         AdminPageBuilderController::class,
         PublicPageController::class,
     ]);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Permissions
+    |--------------------------------------------------------------------------
+    */
+
+    $ctx->permission()->addRoles([
+        'editor' => 'Editor',
+        'writer' => 'Writer',
+    ]);
+
+
+    $ctx->permission()->addPermissions([
+        [
+            'key' => 'admin.pages.view',
+            'name' => 'View Pages',
+            'module' => 'pages',
+            'description' => 'View and access the Pages management area.',
+            'roles' => [
+                'admin',
+                'editor',
+                'writer',
+            ],
+        ],
+
+        [
+            'key' => 'admin.pages.create',
+            'name' => 'Create Pages',
+            'module' => 'pages',
+            'description' => 'Create new pages.',
+            'roles' => [
+                'admin',
+                'editor',
+                'writer',
+            ],
+        ],
+
+        [
+            'key' => 'admin.pages.edit',
+            'name' => 'Edit Pages',
+            'module' => 'pages',
+            'description' => 'Edit existing pages.',
+            'roles' => [
+                'admin',
+                'editor',
+            ],
+        ],
+
+        [
+            'key' => 'admin.pages.delete',
+            'name' => 'Delete Pages',
+            'module' => 'pages',
+            'description' => 'Delete pages.',
+            'roles' => [
+                'admin',
+            ],
+        ],
+
+        [
+            'key' => 'admin.pages.organize',
+            'name' => 'Organize Pages',
+            'module' => 'pages',
+            'description' => 'Organize the page hierarchy.',
+            'roles' => [
+                'admin',
+                'editor',
+            ],
+        ],
+    ]);
+
 },
 
 /*
@@ -104,10 +176,17 @@ return [
 
     $ctx->adminRoutes(function ($r) {
 
+        /*
+        |--------------------------------------------------------------------------
+        | VIEW
+        |--------------------------------------------------------------------------
+        */
+
         $r->add([
             'name' => 'admin.pages',
             'method' => 'GET',
             'uri' => '/pages',
+            'permission' => 'admin.pages.view',
             'action' => [AdminPageController::class, 'pages'],
         ]);
 
@@ -115,6 +194,7 @@ return [
             'name' => 'admin.pages.debug.view',
             'method' => 'GET',
             'uri' => '/pages/debug/view',
+            'permission' => 'admin.pages.view',
             'action' => [AdminPageController::class, 'debug'],
         ]);
 
@@ -122,6 +202,7 @@ return [
             'name' => 'admin.pages.view.base',
             'method' => 'GET',
             'uri' => '/pages/view',
+            'permission' => 'admin.pages.view',
             'action' => [AdminPageController::class, 'pages'],
         ]);
 
@@ -129,13 +210,22 @@ return [
             'name' => 'admin.pages.view',
             'method' => 'GET',
             'uri' => '/pages/view/{path:.+}',
+            'permission' => 'admin.pages.view',
             'action' => [AdminPageController::class, 'pages'],
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE
+        |--------------------------------------------------------------------------
+        */
 
         $r->add([
             'name' => 'admin.pages.create',
             'method' => 'GET',
             'uri' => '/pages/create/{path:.+}',
+            'permission' => 'admin.pages.create',
             'action' => [AdminPageController::class, 'create'],
         ]);
 
@@ -143,6 +233,7 @@ return [
             'name' => 'admin.pages.create.base',
             'method' => 'GET',
             'uri' => '/pages/create',
+            'permission' => 'admin.pages.create',
             'action' => [AdminPageController::class, 'create'],
         ]);
 
@@ -150,13 +241,22 @@ return [
             'name' => 'admin.pages.store',
             'method' => 'POST',
             'uri' => '/pages/store',
+            'permission' => 'admin.pages.create',
             'action' => [AdminPageController::class, 'store'],
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT
+        |--------------------------------------------------------------------------
+        */
 
         $r->add([
             'name' => 'admin.pages.edit',
             'method' => 'GET',
             'uri' => '/pages/edit/{path:.+}',
+            'permission' => 'admin.pages.edit',
             'action' => [AdminPageController::class, 'edit'],
         ]);
 
@@ -164,6 +264,7 @@ return [
             'name' => 'admin.pages.save',
             'method' => 'POST',
             'uri' => '/pages/save',
+            'permission' => 'admin.pages.edit',
             'action' => [AdminPageController::class, 'save'],
         ]);
 
@@ -171,6 +272,7 @@ return [
             'name' => 'admin.pages.builder',
             'method' => 'GET',
             'uri' => '/pages/builder/{path:.+}',
+            'permission' => 'admin.pages.edit',
             'action' => [AdminPageBuilderController::class, 'builder'],
         ]);
 
@@ -178,15 +280,25 @@ return [
             'name' => 'admin.pages.builder.save',
             'method' => 'POST',
             'uri' => '/pages/builder/save',
+            'permission' => 'admin.pages.edit',
             'action' => [AdminPageBuilderController::class, 'save'],
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE
+        |--------------------------------------------------------------------------
+        */
 
         $r->add([
             'name' => 'admin.pages.delete',
             'method' => 'POST',
             'uri' => '/pages/delete',
+            'permission' => 'admin.pages.delete',
             'action' => [AdminPageController::class, 'delete'],
         ]);
+
 
         /*
         |--------------------------------------------------------------------------
@@ -198,6 +310,7 @@ return [
             'name' => 'admin.page-organizer',
             'method' => 'GET',
             'uri' => '/page-organizer',
+            'permission' => 'admin.pages.organize',
             'action' => [AdminPageOrganizerController::class, 'tree'],
         ]);
 
@@ -205,6 +318,7 @@ return [
             'name' => 'admin.page-organizer.toggle',
             'method' => 'POST',
             'uri' => '/page-organizer/toggle',
+            'permission' => 'admin.pages.organize',
             'action' => [AdminPageOrganizerController::class, 'toggle'],
         ]);
 
@@ -212,9 +326,11 @@ return [
             'name' => 'admin.page-organizer.save',
             'method' => 'POST',
             'uri' => '/page-organizer/save',
+            'permission' => 'admin.pages.organize',
             'action' => [AdminPageOrganizerController::class, 'save'],
         ]);
     });
+
 
     /*
     |--------------------------------------------------------------------------
@@ -279,6 +395,7 @@ return [
         'title' => 'Pages',
         'icon' => 'content',
         'order' => 2,
+        'permission' => 'admin.pages.view',
         'children' => [
 
             [
@@ -286,7 +403,7 @@ return [
                 'icon' => 'list',
                 'order' => 1,
                 'url' => $ctx->router()->route('admin.pages'),
-                'permission' => 'pages.view'
+                'permission' => 'admin.pages.view'
             ],
 
             [
@@ -294,7 +411,7 @@ return [
                 'icon' => 'plus',
                 'order' => 2,
                 'url' => $ctx->router()->route('admin.pages.create.base'),
-                'permission' => 'pages.create'
+                'permission' => 'admin.pages.create'
             ],
 
             [
@@ -302,7 +419,7 @@ return [
                 'icon' => 'updown',
                 'order' => 3,
                 'url' => $ctx->router()->route('admin.page-organizer'),
-                'permission' => 'pages.manage'
+                'permission' => 'admin.pages.organize'
             ],
         ]
     ]);
