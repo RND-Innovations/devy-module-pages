@@ -29,7 +29,7 @@ return [
     'meta' => [
         'name' => 'Pages',
         'description' => 'Easily build, manage, and publish custom pages across your website.',        
-        'version' => '1.0.1',
+        'version' => '1.0.2',
         'author' => 'RND Innovations',
         'website' => 'https://rndvn.com',
         'license' => 'MIT',
@@ -163,8 +163,6 @@ return [
 'boot' => function (ModuleContext $ctx) {
 
     $config = $ctx->config();
-
-    $adminSlug = trim($config->get('admin.slug'), '/');
 
     $pageService = fn() => $ctx->get(PageService::class);
 
@@ -369,7 +367,9 @@ return [
 
     $ctx->hook('router.fallback', function ($uri) use ($ctx, $config) {
 
-        $adminSlug = trim($config->get('admin.slug'), '/');
+        $appCode = $config->get('app.code');
+
+        $adminSlug = trim($config->get('admin.slug',$appCode), '/');
 
         if (str_starts_with(trim($uri, '/'), $adminSlug)) {
             return null;
